@@ -208,7 +208,7 @@ public class Scene implements GLEventListener {
         gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 12.8f);
 
         gl.glTranslatef(-50.0f, 0, -100);
-        drawObj(gl, model3);                    //table
+        drawObj(gl, model3, wood);                    //table
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.00f, 0.30f, 0.30f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.00f, 0.25f, 0.42f}, 0);
@@ -224,7 +224,7 @@ public class Scene implements GLEventListener {
         gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
 
         gl.glTranslatef(-70f, -5f, 0);
-        drawObj(gl, model4);                    //metronom
+        drawObj(gl, model4, organic);                    //metronom
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.00f, 0.20f, 0.20f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.00f, 0.10f, 0.10f}, 0);
@@ -266,8 +266,8 @@ public class Scene implements GLEventListener {
         gl.glTranslatef(80f, 0f, 150);
         gl.glRotatef(180, 0, 1, 0);
 
-        drawObj(gl, model7);                    //cabinet
-        drawObj(gl, model8);
+        drawObj(gl, model7, wood);                    //cabinet
+        drawObj(gl, model8, wood);
 
         gl.glTranslatef(0f, height, 0);
         if (height > 170) {
@@ -307,7 +307,7 @@ public class Scene implements GLEventListener {
 
         gl.glRotatef(30, 0, 1, 0);
         gl.glTranslatef(0, 20, 0);
-        drawCube(gl, flowers);
+        drawCube(gl, geometry);
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.10f, 0.10f, 0.30f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.10f, 0.10f, 0.30f}, 0);
@@ -316,7 +316,7 @@ public class Scene implements GLEventListener {
 
         gl.glRotatef(-20, 0, 1, 0);
         gl.glTranslatef(0, 20, 0);
-        drawCube(gl, flowers);
+        drawCube(gl, organic);
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.40f, 0.40f, 0.10f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.30f, 0.30f, 0.10f}, 0);
@@ -325,7 +325,7 @@ public class Scene implements GLEventListener {
 
         gl.glRotatef(-30, 0, 1, 0);
         gl.glTranslatef(0, 20, 0);
-        drawCube(gl, flowers);
+        drawCube(gl, painting);
 
         gl.glPopMatrix();
 
