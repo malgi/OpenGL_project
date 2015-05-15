@@ -34,7 +34,7 @@ public class ObjLoader {
         this.path = path;
     }
     
-    public void texLoad() {
+    public void load() {
         /**
          * Mesh containing the loaded object
          */
@@ -79,11 +79,10 @@ public class ObjLoader {
                 } else if (line.startsWith("vt ")) {
 
                     String[] textStr = line.split("\\s+");
-                    float[] texture = new float[3];
+                    float[] texture = new float[2];
 
                     texture[0] = Float.parseFloat(textStr[1]);
                     texture[1] = Float.parseFloat(textStr[2]);
-                    texture[2] = Float.parseFloat(textStr[3]);
                     textures.add(texture);
 
                 } else if (line.startsWith("f ")) {
@@ -96,14 +95,12 @@ public class ObjLoader {
                     faceVert[2] = Integer.parseInt(faceStr[3].split("/")[0]) - 1;
                     vertexIndices.add(faceVert);
 
-                    // TODO: indexy texturovych suradnic (2. hodnota z trojice cisel)
                     if (faceStr[1].split("/").length >= 3) {
-                        int[] textVert = new int[3];
+                        int[] textVert = new int[2];
 
                         textVert[0] = Integer.parseInt(faceStr[1].split("/")[1]) - 1;
                         textVert[1] = Integer.parseInt(faceStr[2].split("/")[1]) - 1;
-                        textVert[2] = Integer.parseInt(faceStr[3].split("/")[1]) - 1;
-                        vertexIndices.add(faceVert);
+                        textureIndices.add(faceVert);
                     }
 
                     if (faceStr[1].split("/").length >= 3) {
@@ -137,7 +134,7 @@ public class ObjLoader {
             for (float[] texture : textures) {
                 texturesBuffer.put(texture[0]);
                 texturesBuffer.put(texture[1]);
-                texturesBuffer.put(texture[2]);
+
             }
             texturesBuffer.rewind();
             
@@ -161,113 +158,10 @@ public class ObjLoader {
             for (int[] textureIndex : vertexIndices) {
                 texturesIndicesBuffer.put(textureIndex[0]);
                 texturesIndicesBuffer.put(textureIndex[1]);
-                texturesIndicesBuffer.put(textureIndex[2]);
+
             }
             vertexIndicesBuffer.rewind();
 
-        } catch (IOException ex) {
-            System.out.println("Unable to load " + path + " file: " + ex.getMessage());
-        }
-    }
-    
-    public void load() {
-        /** Mesh containing the loaded object */
-        vertices = new ArrayList<float[]>();
-        normals = new ArrayList<float[]>();
-        vertexIndices = new ArrayList<int[]>();
-        normalIndices = new ArrayList<int[]>();
-                
-        String line;
-        try {
-            inReader = new BufferedReader(new InputStreamReader(
-                    this.getClass().getResource(path).openStream()));
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
-            return;
-        }
-        try {
-            while ((line = inReader.readLine()) != null) {
-                
-                if (line.startsWith("v ")) {
-                    
-                    String[] vertStr = line.split("\\s+");
-                    float[] vertex = new float[3];
-                            
-                    vertex[0] = Float.parseFloat(vertStr[1]);
-                    vertex[1] = Float.parseFloat(vertStr[2]);
-                    vertex[2] = Float.parseFloat(vertStr[3]);
-                    vertices.add(vertex);
-                    
-                } else if (line.startsWith("vn ")) {
-                    
-                    String[] normStr = line.split("\\s+");
-                    float[] normal = new float[3];
-                    
-                    normal[0] = Float.parseFloat(normStr[1]);
-                    normal[1] = Float.parseFloat(normStr[2]);
-                    normal[2] = Float.parseFloat(normStr[3]);
-                    normals.add(normal);
-                    
-                } else if (line.startsWith("vt ")) {
-                    
-                    // TODO: texturove suradnice
-                    
-                } else if (line.startsWith("f ")) {
-                    
-                    String[] faceStr = line.split("\\s+");
-                    int[] faceVert = new int[3];
-
-                    faceVert[0] = Integer.parseInt(faceStr[1].split("/")[0]) - 1;
-                    faceVert[1] = Integer.parseInt(faceStr[2].split("/")[0]) - 1;
-                    faceVert[2] = Integer.parseInt(faceStr[3].split("/")[0]) - 1;
-                    vertexIndices.add(faceVert);
-                    
-                    // TODO: indexy texturovych suradnic (2. hodnota z trojice cisel)
-                    
-                    if (faceStr[1].split("/").length >= 3) {
-                        int[] faceNorm = new int[3];
-
-                        faceNorm[0] = Integer.parseInt(faceStr[1].split("/")[2]) - 1;
-                        faceNorm[1] = Integer.parseInt(faceStr[2].split("/")[2]) - 1;
-                        faceNorm[2] = Integer.parseInt(faceStr[3].split("/")[2]) - 1;
-                        normalIndices.add(faceNorm);
-                    }
-                }
-            }
-            
-            
-        verticesBuffer = Buffers.newDirectFloatBuffer(vertices.size() * 3);
-            for (float[] vertex : vertices) {
-                verticesBuffer.put(vertex[0]);
-                verticesBuffer.put(vertex[1]);
-                verticesBuffer.put(vertex[2]);
-            }
-        verticesBuffer.rewind();
-        
-        normalsBuffer = Buffers.newDirectFloatBuffer(normals.size() * 3);
-        for (float[] normal : normals) {
-                normalsBuffer.put(normal[0]);
-                normalsBuffer.put(normal[1]);
-                normalsBuffer.put(normal[2]);
-            }
-        normalsBuffer.rewind();
-        
-        vertexIndicesBuffer = Buffers.newDirectIntBuffer(vertexIndices.size() * 3);
-        for (int[] vertexIndex : vertexIndices) {
-                vertexIndicesBuffer.put(vertexIndex[0]);
-                vertexIndicesBuffer.put(vertexIndex[1]);
-                vertexIndicesBuffer.put(vertexIndex[2]);
-            }
-        vertexIndicesBuffer.rewind();
-        
-        normalsIndicesBuffer = Buffers.newDirectIntBuffer(normalIndices.size() * 3);
-        for (int[] normalIndex : normalIndices) {
-                normalsIndicesBuffer.put(normalIndex[0]);
-                normalsIndicesBuffer.put(normalIndex[1]);
-                normalsIndicesBuffer.put(normalIndex[2]);
-            }
-        normalsIndicesBuffer.rewind();
-        
         } catch (IOException ex) {
             System.out.println("Unable to load " + path + " file: " + ex.getMessage());
         }

@@ -95,7 +95,7 @@ public class Scene implements GLEventListener {
         model9 = new ObjLoader("/resources/metronome-hand.obj");
 
         model1.load();
-        model2.texLoad();
+        model2.load();
         model3.load();
         model4.load();
         model5.load();
@@ -389,21 +389,21 @@ public class Scene implements GLEventListener {
             float[] texture = model.getTextures().get(textureIndex[0]);
             float[] normal = model.getNormals().get(normalIndex[0]);
             gl.glNormal3f(normal[0], normal[1], normal[2]);
-            gl.glTexCoord3f(texture[0], texture[1], texture[2]);
+            gl.glTexCoord2f(texture[0], texture[1]);
             gl.glVertex3f(vertex[0], vertex[1], vertex[2]);
 
             vertex = model.getVertices().get(index[1]);
             texture = model.getTextures().get(textureIndex[1]);
             normal = model.getNormals().get(normalIndex[1]);
             gl.glNormal3f(normal[0], normal[1], normal[2]);
-            gl.glTexCoord3f(texture[0], texture[1], texture[2]);
+            gl.glTexCoord2f(texture[0], texture[1]);
             gl.glVertex3f(vertex[0], vertex[1], vertex[2]);
 
             vertex = model.getVertices().get(index[2]);
             texture = model.getTextures().get(index[2]);
             normal = model.getNormals().get(normalIndex[2]);
             gl.glNormal3f(normal[0], normal[1], normal[2]);
-            gl.glTexCoord3f(texture[0], texture[1], texture[2]);
+            gl.glTexCoord2f(texture[0], texture[1]);
             gl.glVertex3f(vertex[0], vertex[1], vertex[2]);
 
             gl.glEnd();
