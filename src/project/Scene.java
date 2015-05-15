@@ -36,9 +36,11 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT1;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT2;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHTING;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_POSITION;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPOT_DIRECTION;
 import javax.media.opengl.glu.GLU;
 
 /**
@@ -65,6 +67,14 @@ public class Scene implements GLEventListener {
 
     private int handAngle = 0; //height of teacup
     private boolean goLeft = false;
+    
+    private float[] diffuseLight0;
+    private float[] positionLight0;
+    private float[] specularLight0;
+
+    private float[] diffuseLight1;
+    private float[] positionLight1;
+    private float[] specularLight1;
 
     private ObjLoader model1;
     private ObjLoader model2;
@@ -103,7 +113,14 @@ public class Scene implements GLEventListener {
         model7.load();
         model8.load();
         model9.load();
+        
+        diffuseLight0 = new float[]{1f, 1f, 1f};
+        positionLight0 = new float[]{4, 4, 4, 1};
+        specularLight0 = new float[]{1, 1, 1};
 
+        diffuseLight1 = new float[]{1f, 0f, 1f};
+        positionLight1 = new float[]{4, 4, -4, 1};
+        specularLight1 = new float[]{0, 1, 0};
     }
 
     @Override
@@ -123,15 +140,16 @@ public class Scene implements GLEventListener {
 
         gl.glEnable(GL_DEPTH_TEST);
 
-        float[] position = {0.4f, 2f, 2f};
-        float[] diffuseLight1 = {1f, 1f, 1f};
-        float[] ambientLight1 = {1f, 1f, 1f};
-        float[] specularLight1 = {1f, 1f, 1f};
+        // to c chceme emsnit / jakou slozku / pole floutou/ a 0 
+        gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight0, 0);
+        gl.glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
+        //gl.glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 20.0f);
+        gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight0, 0);
 
-        //gl.glLightfv(GL_LIGHT0, GL_POSITION, position, 0);
-        gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight1, 0);
-        gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight1, 0);
-        gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight1, 0);
+        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 0);
+        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 0);
+        gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
+        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
 
         // TEXTURES
         String name = "";
@@ -182,10 +200,10 @@ public class Scene implements GLEventListener {
                 0.0f, 1.0f, 0.0f);
 
         //FLOOR
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 0.2f, 1.0f}, 0);
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.2f, 0.2f, 0.2f}, 0);
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
-        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 2);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.25f, 0.25f, 0.25f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.4f, 0.4f, 0.4f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{0.774597f, 0.774597f, 0.774597f}, 0);
+        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 76.8f);
 
         // FLOOR       
         gl.glPushMatrix();
@@ -202,10 +220,10 @@ public class Scene implements GLEventListener {
         // TABLE WITH STUFF
         gl.glPushMatrix();
 
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0f, 0f, 0f}, 0);
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.24f, 0.06f, 0f}, 0);
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{0f, 0f, 0f}, 0);
-        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 12.8f);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.25f, 0.25f, 0.25f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.4f, 0.4f, 0.4f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{0.774597f, 0.774597f, 0.774597f}, 0);
+        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 76.8f);
 
         gl.glTranslatef(-50.0f, 0, -100);
         drawObj(gl, model3, wood);                    //table
