@@ -31,6 +31,7 @@ import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_EMISSION;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT0;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT1;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHT2;
@@ -69,6 +70,8 @@ public class Scene implements GLEventListener {
     private int handAngle = 0; //height of teacup
     private boolean goLeft = false;
     
+    private int time = 0;
+
     private float[] diffuseLight0;
     private float[] ambientLight0;
     private float[] positionLight0;
@@ -78,6 +81,11 @@ public class Scene implements GLEventListener {
     private float[] ambientLight1;
     private float[] positionLight1;
     private float[] specularLight1;
+    
+    private float[] diffuseLight2;
+    private float[] ambientLight2;
+    private float[] positionLight2;
+    private float[] specularLight2;
 
     private ObjLoader model1;
     private ObjLoader model2;
@@ -95,7 +103,7 @@ public class Scene implements GLEventListener {
     private Texture geometry;
     private Texture organic;
     private Texture painting;
-    
+
     private boolean light1 = true;
 
     public Scene() {
@@ -118,35 +126,38 @@ public class Scene implements GLEventListener {
         model7.load();
         model8.load();
         model9.load();
-        
+
         diffuseLight0 = new float[]{1f, 1f, 1f};
         ambientLight0 = new float[]{1f, 1f, 1f};
         positionLight0 = new float[]{-10, 100, 20, 0};
         specularLight0 = new float[]{1, 1, 1};
 
-        diffuseLight1 = new float[]{1f, 0f, 1f};
-        ambientLight1 = new float[]{1f, 0f, 1f};
+        diffuseLight1 = new float[]{1f, 1f, 1f};
+        ambientLight1 = new float[]{1f, 1f, 1f};
         positionLight1 = new float[]{0, 0, 0, 1};
-        specularLight1 = new float[]{0, 1, 0};
+        specularLight1 = new float[]{1, 1, 1};
+        
+        diffuseLight2 = new float[]{1f, 1f, 1f};
+        ambientLight2 = new float[]{1f, 1f, 1f};
+        positionLight2 = new float[]{20, 80, 20, 1};
+        specularLight2 = new float[]{1, 1, 1};
     }
 
     @Override
     public void init(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
-        
-        
-        
+
         // BACKGROUND
         gl.glClearColor(0f, 0.4f, 0.7f, 0.0f);
 
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
         gl.glEnable(GL_LIGHT1);
-        //gl.glEnable(GL_LIGHT2);
+        gl.glEnable(GL_LIGHT2);
         gl.glCullFace(GL_BACK);
         gl.glEnable(GL_NORMALIZE);
         gl.glEnable(GL_TEXTURE_2D);
-
+        //gl.glEnable(GL_ATTENUATION_EXT);
         gl.glEnable(GL_DEPTH_TEST);
 
         // LIGHT0 
@@ -155,15 +166,21 @@ public class Scene implements GLEventListener {
         gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight0, 0);
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight0, 0);
         //gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
-        
+
         // LIGHT1 - lamp light
         gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight1, 0);
         gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 0);
         gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 0);
-        //gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);
+        gl.glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
+        gl.glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 20f);
         
+        // LIGHT2 - animated light
+        gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight2, 0);
+        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight2, 0);
+        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight2, 0);
+        //gl.glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
+        //gl.glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 20f);
 
-        
 
         // TEXTURES
         String name = "";
@@ -212,21 +229,19 @@ public class Scene implements GLEventListener {
         glu.gluLookAt(x, y, z,
                 x + lx, ly, z + lz,
                 0.0f, 1.0f, 0.0f);
-        
-        if (light1 == true){
+
+        if (light1 == true) {
             gl.glEnable(GL_LIGHT1);
-        }
-        else{
+        } else {
             gl.glDisable(GL_LIGHT1);
         }
-        
+
         // LIGHTS SOURCES
         /*gl.glPushMatrix();
-        gl.glTranslatef(positionLight1[0], positionLight1[1], positionLight1[2]);
-        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
-        glut.glutSolidSphere(3, 10, 10);
-        gl.glPopMatrix();*/
-
+         gl.glTranslatef(positionLight1[0], positionLight1[1], positionLight1[2]);
+         gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
+         glut.glutSolidSphere(3, 10, 10);
+         gl.glPopMatrix();*/
         //FLOOR
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.25f, 0.25f, 0.25f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.4f, 0.4f, 0.4f}, 0);
@@ -263,18 +278,25 @@ public class Scene implements GLEventListener {
 
         gl.glTranslatef(40f, 71f, -10);
         drawObj(gl, model1);                    //lamp
-        
+
         gl.glPushMatrix();
-        gl.glTranslatef(0f, 20f, 0);
-        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
-        glut.glutSolidSphere(3, 10, 10);
-        gl.glPopMatrix();
+        gl.glTranslatef(-3f, 18f, 0);
+        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);            //light1
         
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{1f, 1f, 1f}, 0);
+        
+        glut.glutSolidSphere(2, 10, 10);
+        gl.glPopMatrix();
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.00f, 0.30f, 0.30f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.00f, 0.52f, 0.39f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
         gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{0f, 0f, 0f}, 0);
 
         gl.glTranslatef(-70f, -5f, 0);
         drawObj(gl, model4, organic);                    //metronom
@@ -381,6 +403,30 @@ public class Scene implements GLEventListener {
         drawCube(gl, painting);
 
         gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+        gl.glRotated(time * 4, 0, 1, 0);
+        gl.glLightfv(GL_LIGHT2, GL_POSITION, positionLight2, 0);            //light2
+        
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
+        gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
+        
+        glut.glutSolidSphere(2, 10, 10);
+        gl.glPopMatrix();
+        
+       
+        
+        /*gl.glPushMatrix();
+        gl.glRotated(time * 4, 0, 1, 0);
+        gl.glTranslatef(positionLight2[0], positionLight2[1], positionLight2[2]);
+        gl.glLightfv(GL_LIGHT2, GL_POSITION, new float[]{0,0,0,1}, 0);
+        gl.glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, new float[]{-1,-0.5f,-1},0);
+        glut.glutSolidSphere(1, 10, 10);
+        gl.glPopMatrix();*/
+        
+        time++;
 
     }
 
@@ -426,7 +472,7 @@ public class Scene implements GLEventListener {
             gl.glEnd();
         }
     }
-    
+
     private void drawObj(GL2 gl, ObjLoader model, Texture textureName) {
         textureName.bind(gl);
         gl.glShadeModel(GL_SMOOTH);
@@ -462,7 +508,7 @@ public class Scene implements GLEventListener {
             gl.glEnd();
         }
     }
-    
+
     private Texture loadTexture(GL2 gl, String filename, String suffix) throws IOException {
         try {
             InputStream is = Scene.class.getResourceAsStream(filename);
@@ -574,7 +620,7 @@ public class Scene implements GLEventListener {
 
         gl.glEnd();
     }
-    
+
     void goBack() {
         x -= lx * fraction;
         z -= lz * fraction;
@@ -606,16 +652,13 @@ public class Scene implements GLEventListener {
         ly--;
         y--;
     }
-    
-    void turnOffLight1(){
-        if (light1 == true){
+
+    void turnOffLight1() {
+        if (light1 == true) {
             light1 = false;
-        }
-        else{
+        } else {
             light1 = true;
         }
     }
-
-
 
 }
