@@ -40,6 +40,7 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_POSITION;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SMOOTH;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
+import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPOT_CUTOFF;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPOT_DIRECTION;
 import javax.media.opengl.glu.GLU;
 
@@ -115,11 +116,11 @@ public class Scene implements GLEventListener {
         model9.load();
         
         diffuseLight0 = new float[]{1f, 1f, 1f};
-        positionLight0 = new float[]{4, 4, 4, 1};
+        positionLight0 = new float[]{-10, 100, 20, 0};
         specularLight0 = new float[]{1, 1, 1};
 
         diffuseLight1 = new float[]{1f, 0f, 1f};
-        positionLight1 = new float[]{4, 4, -4, 1};
+        positionLight1 = new float[]{0, 0, 4, 0};
         specularLight1 = new float[]{0, 1, 0};
     }
 
@@ -132,8 +133,8 @@ public class Scene implements GLEventListener {
 
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
-        gl.glEnable(GL_LIGHT1);
-        gl.glEnable(GL_LIGHT2);
+        //gl.glEnable(GL_LIGHT1);
+        //gl.glEnable(GL_LIGHT2);
         gl.glCullFace(GL_BACK);
         gl.glEnable(GL_NORMALIZE);
         gl.glEnable(GL_TEXTURE_2D);
@@ -142,14 +143,17 @@ public class Scene implements GLEventListener {
 
         // to c chceme emsnit / jakou slozku / pole floutou/ a 0 
         gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight0, 0);
-        gl.glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
-        //gl.glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 20.0f);
+    //    gl.glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
+        gl.glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 20.0f);
         gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight0, 0);
+      //  gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
+        
+        /*gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 1);
+        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 1);
+        // gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);*/
+        
 
-        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 0);
-        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 0);
-        gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
-        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
+        
 
         // TEXTURES
         String name = "";
@@ -198,6 +202,12 @@ public class Scene implements GLEventListener {
         glu.gluLookAt(x, y, z,
                 x + lx, ly, z + lz,
                 0.0f, 1.0f, 0.0f);
+        
+        // LIGHTS SOURCES
+        gl.glPushMatrix();
+        gl.glTranslatef(positionLight0[0], positionLight0[1], positionLight0[2]);
+        glut.glutSolidSphere(20, 5, 5);
+        gl.glPopMatrix();
 
         //FLOOR
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.25f, 0.25f, 0.25f}, 0);
@@ -235,6 +245,9 @@ public class Scene implements GLEventListener {
 
         gl.glTranslatef(40f, 71f, -10);
         drawObj(gl, model1);                    //lamp
+        
+        
+        
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.00f, 0.30f, 0.30f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.00f, 0.52f, 0.39f}, 0);
@@ -418,7 +431,7 @@ public class Scene implements GLEventListener {
             gl.glVertex3f(vertex[0], vertex[1], vertex[2]);
 
             vertex = model.getVertices().get(index[2]);
-            texture = model.getTextures().get(index[2]);
+            texture = model.getTextures().get(textureIndex[2]);
             normal = model.getNormals().get(normalIndex[2]);
             gl.glNormal3f(normal[0], normal[1], normal[2]);
             gl.glTexCoord2f(texture[0], texture[1]);
