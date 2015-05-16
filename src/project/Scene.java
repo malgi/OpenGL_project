@@ -69,7 +69,7 @@ public class Scene implements GLEventListener {
 
     private int handAngle = 0; //height of teacup
     private boolean goLeft = false;
-    
+
     boolean colorUp = true;
     int savedTime = 0;
 
@@ -108,6 +108,7 @@ public class Scene implements GLEventListener {
     private Texture painting;
 
     private boolean light1 = true;
+    private boolean light2 = true;
 
     public Scene() {
         model1 = new ObjLoader("/resources/lamp.obj");
@@ -236,6 +237,12 @@ public class Scene implements GLEventListener {
             gl.glEnable(GL_LIGHT1);
         } else {
             gl.glDisable(GL_LIGHT1);
+        }
+        
+        if (light2 == true) {
+            gl.glEnable(GL_LIGHT2);
+        } else {
+            gl.glDisable(GL_LIGHT2);
         }
 
         // LIGHTS SOURCES
@@ -419,10 +426,7 @@ public class Scene implements GLEventListener {
         glut.glutSolidSphere(2, 10, 10);
         gl.glPopMatrix();
 
-        
-        
-        
-        if (time % 100 == 0){
+        if (time % 100 == 0) {
             savedTime = time;
         }
         if (savedTime % 3 == 0) {
@@ -432,7 +436,7 @@ public class Scene implements GLEventListener {
             if (ambientLight2[0] >= 1) {
                 colorUp = false;
             }
-            
+
             if (colorUp == true) {
                 ambientLight2[0] = ambientLight2[0] + 0.05f;
                 diffuseLight2[0] = diffuseLight2[0] + 0.05f;
@@ -440,15 +444,14 @@ public class Scene implements GLEventListener {
                 ambientLight2[0] = ambientLight2[0] - 0.05f;
                 diffuseLight2[0] = diffuseLight2[0] - 0.05f;
             }
-        } 
-        else if (savedTime % 3 == 1){
+        } else if (savedTime % 3 == 1) {
             if (ambientLight2[1] <= 0) {
                 colorUp = true;
             }
             if (ambientLight2[1] >= 1) {
                 colorUp = false;
             }
-            
+
             if (colorUp == true) {
                 ambientLight2[1] = ambientLight2[1] + 0.05f;
                 diffuseLight2[1] = diffuseLight2[1] + 0.05f;
@@ -456,15 +459,14 @@ public class Scene implements GLEventListener {
                 ambientLight2[1] = ambientLight2[1] - 0.05f;
                 diffuseLight2[1] = diffuseLight2[1] - 0.05f;
             }
-        }
-        else{
+        } else {
             if (ambientLight2[2] <= 0) {
                 colorUp = true;
             }
             if (ambientLight2[2] >= 1) {
                 colorUp = false;
             }
-            
+
             if (colorUp == true) {
                 ambientLight2[2] = ambientLight2[2] + 0.05f;
                 diffuseLight2[2] = diffuseLight2[2] + 0.05f;
@@ -474,13 +476,12 @@ public class Scene implements GLEventListener {
             }
         }
 
-        System.out.println(ambientLight2[0]);
-        System.out.println(time);
-
         gl.glLightfv(GL_LIGHT2, GL_AMBIENT, ambientLight2, 0);
         gl.glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuseLight2, 0);
 
-        time++;
+        if (light2) {
+            time++;
+        }
 
     }
 
@@ -712,6 +713,14 @@ public class Scene implements GLEventListener {
             light1 = false;
         } else {
             light1 = true;
+        }
+    }
+
+    void turnOffLight2() {
+        if (light2 == true) {
+            light2 = false;
+        } else {
+            light2 = true;
         }
     }
 
