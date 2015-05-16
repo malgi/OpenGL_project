@@ -70,10 +70,12 @@ public class Scene implements GLEventListener {
     private boolean goLeft = false;
     
     private float[] diffuseLight0;
+    private float[] ambientLight0;
     private float[] positionLight0;
     private float[] specularLight0;
 
     private float[] diffuseLight1;
+    private float[] ambientLight1;
     private float[] positionLight1;
     private float[] specularLight1;
 
@@ -116,24 +118,28 @@ public class Scene implements GLEventListener {
         model9.load();
         
         diffuseLight0 = new float[]{1f, 1f, 1f};
+        ambientLight0 = new float[]{1f, 1f, 1f};
         positionLight0 = new float[]{-10, 100, 20, 0};
         specularLight0 = new float[]{1, 1, 1};
 
         diffuseLight1 = new float[]{1f, 0f, 1f};
-        positionLight1 = new float[]{0, 0, 4, 0};
+        ambientLight1 = new float[]{1f, 0f, 1f};
+        positionLight1 = new float[]{4, 4, -4, 1};
         specularLight1 = new float[]{0, 1, 0};
     }
 
     @Override
     public void init(GLAutoDrawable glad) {
         GL2 gl = glad.getGL().getGL2();
-
+        
+        
+        
         // BACKGROUND
         gl.glClearColor(0f, 0.4f, 0.7f, 0.0f);
 
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
-        //gl.glEnable(GL_LIGHT1);
+        gl.glEnable(GL_LIGHT1);
         //gl.glEnable(GL_LIGHT2);
         gl.glCullFace(GL_BACK);
         gl.glEnable(GL_NORMALIZE);
@@ -141,16 +147,18 @@ public class Scene implements GLEventListener {
 
         gl.glEnable(GL_DEPTH_TEST);
 
-        // to c chceme emsnit / jakou slozku / pole floutou/ a 0 
+        // LIGHT0 
         gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight0, 0);
-    //    gl.glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
         gl.glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 20.0f);
         gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight0, 0);
-      //  gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
+        gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight0, 0);
+        //gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
         
-        /*gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 1);
+        // LIGHT1 - lamp light
+        gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight1, 1);
+        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 1);
         gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 1);
-        // gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);*/
+        //gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);
         
 
         
@@ -207,6 +215,12 @@ public class Scene implements GLEventListener {
         gl.glPushMatrix();
         gl.glTranslatef(positionLight0[0], positionLight0[1], positionLight0[2]);
         glut.glutSolidSphere(20, 5, 5);
+        gl.glPopMatrix();
+        
+        gl.glPushMatrix();
+            gl.glTranslatef(positionLight1[0], positionLight1[1], positionLight1[2]);    
+            gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);
+            glut.glutSolidSphere(0.2, 10, 10);
         gl.glPopMatrix();
 
         //FLOOR
