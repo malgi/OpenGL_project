@@ -70,6 +70,9 @@ public class Scene implements GLEventListener {
     private int handAngle = 0; //height of teacup
     private boolean goLeft = false;
     
+    boolean colorUp = true;
+    int savedTime = 0;
+
     private int time = 0;
 
     private float[] diffuseLight0;
@@ -81,7 +84,7 @@ public class Scene implements GLEventListener {
     private float[] ambientLight1;
     private float[] positionLight1;
     private float[] specularLight1;
-    
+
     private float[] diffuseLight2;
     private float[] ambientLight2;
     private float[] positionLight2;
@@ -136,10 +139,10 @@ public class Scene implements GLEventListener {
         ambientLight1 = new float[]{1f, 1f, 1f};
         positionLight1 = new float[]{0, 0, 0, 1};
         specularLight1 = new float[]{1, 1, 1};
-        
+
         diffuseLight2 = new float[]{1f, 1f, 1f};
         ambientLight2 = new float[]{1f, 1f, 1f};
-        positionLight2 = new float[]{20, 80, 20, 1};
+        positionLight2 = new float[]{40, 200, 40, 1};
         specularLight2 = new float[]{1, 1, 1};
     }
 
@@ -173,14 +176,13 @@ public class Scene implements GLEventListener {
         gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 0);
         gl.glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
         gl.glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 20f);
-        
-        // LIGHT2 - animated light
-        gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight2, 0);
-        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight2, 0);
-        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight2, 0);
-        //gl.glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
-        //gl.glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 20f);
 
+        // LIGHT2 - animated light
+        gl.glLightfv(GL_LIGHT2, GL_AMBIENT, ambientLight2, 0);
+        gl.glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuseLight2, 0);
+        gl.glLightfv(GL_LIGHT2, GL_SPECULAR, specularLight2, 0);
+        gl.glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, new float[]{0, -1, 0}, 0);
+        gl.glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 20f);
 
         // TEXTURES
         String name = "";
@@ -282,13 +284,13 @@ public class Scene implements GLEventListener {
         gl.glPushMatrix();
         gl.glTranslatef(-3f, 18f, 0);
         gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);            //light1
-        
+
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 1f, 1f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{1f, 1f, 1f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
         gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{1f, 1f, 1f}, 0);
-        
+
         glut.glutSolidSphere(2, 10, 10);
         gl.glPopMatrix();
 
@@ -403,29 +405,81 @@ public class Scene implements GLEventListener {
         drawCube(gl, painting);
 
         gl.glPopMatrix();
-        
+
         gl.glPushMatrix();
-        gl.glRotated(time * 4, 0, 1, 0);
+        gl.glRotated(time * 3, 0, 1, 0);
+        gl.glTranslatef(positionLight2[0], positionLight2[1], positionLight2[2]);
         gl.glLightfv(GL_LIGHT2, GL_POSITION, positionLight2, 0);            //light2
-        
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 1f, 1f}, 0);
-        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{1f, 1f, 1f}, 0);
+
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0f, 0f, 0f}, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0f, 0f, 0f}, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
         gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
-        
+
         glut.glutSolidSphere(2, 10, 10);
         gl.glPopMatrix();
+
         
-       
         
-        /*gl.glPushMatrix();
-        gl.glRotated(time * 4, 0, 1, 0);
-        gl.glTranslatef(positionLight2[0], positionLight2[1], positionLight2[2]);
-        gl.glLightfv(GL_LIGHT2, GL_POSITION, new float[]{0,0,0,1}, 0);
-        gl.glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, new float[]{-1,-0.5f,-1},0);
-        glut.glutSolidSphere(1, 10, 10);
-        gl.glPopMatrix();*/
         
+        if (time % 100 == 0){
+            savedTime = time;
+        }
+        if (savedTime % 3 == 0) {
+            if (ambientLight2[0] <= 0) {
+                colorUp = true;
+            }
+            if (ambientLight2[0] >= 1) {
+                colorUp = false;
+            }
+            
+            if (colorUp == true) {
+                ambientLight2[0] = ambientLight2[0] + 0.05f;
+                diffuseLight2[0] = diffuseLight2[0] + 0.05f;
+            } else {
+                ambientLight2[0] = ambientLight2[0] - 0.05f;
+                diffuseLight2[0] = diffuseLight2[0] - 0.05f;
+            }
+        } 
+        else if (savedTime % 3 == 1){
+            if (ambientLight2[1] <= 0) {
+                colorUp = true;
+            }
+            if (ambientLight2[1] >= 1) {
+                colorUp = false;
+            }
+            
+            if (colorUp == true) {
+                ambientLight2[1] = ambientLight2[1] + 0.05f;
+                diffuseLight2[1] = diffuseLight2[1] + 0.05f;
+            } else {
+                ambientLight2[1] = ambientLight2[1] - 0.05f;
+                diffuseLight2[1] = diffuseLight2[1] - 0.05f;
+            }
+        }
+        else{
+            if (ambientLight2[2] <= 0) {
+                colorUp = true;
+            }
+            if (ambientLight2[2] >= 1) {
+                colorUp = false;
+            }
+            
+            if (colorUp == true) {
+                ambientLight2[2] = ambientLight2[2] + 0.05f;
+                diffuseLight2[2] = diffuseLight2[2] + 0.05f;
+            } else {
+                ambientLight2[2] = ambientLight2[2] - 0.05f;
+                diffuseLight2[2] = diffuseLight2[2] - 0.05f;
+            }
+        }
+
+        System.out.println(ambientLight2[0]);
+        System.out.println(time);
+
+        gl.glLightfv(GL_LIGHT2, GL_AMBIENT, ambientLight2, 0);
+        gl.glLightfv(GL_LIGHT2, GL_DIFFUSE, diffuseLight2, 0);
+
         time++;
 
     }
