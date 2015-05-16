@@ -8,6 +8,7 @@ package project;
 import com.jogamp.opengl.util.FPSAnimator;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import javax.media.opengl.GL2;
 import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLProfile;
 import javax.media.opengl.awt.GLJPanel;
@@ -70,6 +71,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_S:
                 scene.goBack();
@@ -83,11 +85,8 @@ public class MainWindow extends javax.swing.JFrame {
             case KeyEvent.VK_A:
                 scene.turnLeft();
                 break;
-            case KeyEvent.VK_E:
-                scene.goRight();
-                break;
-            case KeyEvent.VK_Q:
-                scene.goLeft();
+            case KeyEvent.VK_H:
+                scene.turnOffLight1();
                 break;
 
         }

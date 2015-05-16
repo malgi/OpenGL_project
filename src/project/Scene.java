@@ -95,6 +95,8 @@ public class Scene implements GLEventListener {
     private Texture geometry;
     private Texture organic;
     private Texture painting;
+    
+    private boolean light1 = true;
 
     public Scene() {
         model1 = new ObjLoader("/resources/lamp.obj");
@@ -124,7 +126,7 @@ public class Scene implements GLEventListener {
 
         diffuseLight1 = new float[]{1f, 0f, 1f};
         ambientLight1 = new float[]{1f, 0f, 1f};
-        positionLight1 = new float[]{4, 4, -4, 1};
+        positionLight1 = new float[]{0, 0, 0, 1};
         specularLight1 = new float[]{0, 1, 0};
     }
 
@@ -155,9 +157,9 @@ public class Scene implements GLEventListener {
         //gl.glLightfv(GL_LIGHT0, GL_POSITION, positionLight0, 0);
         
         // LIGHT1 - lamp light
-        gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight1, 1);
-        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 1);
-        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 1);
+        gl.glLightfv(GL_LIGHT1, GL_AMBIENT, ambientLight1, 0);
+        gl.glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuseLight1, 0);
+        gl.glLightfv(GL_LIGHT1, GL_SPECULAR, specularLight1, 0);
         //gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);
         
 
@@ -211,17 +213,19 @@ public class Scene implements GLEventListener {
                 x + lx, ly, z + lz,
                 0.0f, 1.0f, 0.0f);
         
-        // LIGHTS SOURCES
-        gl.glPushMatrix();
-        gl.glTranslatef(positionLight0[0], positionLight0[1], positionLight0[2]);
-        glut.glutSolidSphere(20, 5, 5);
-        gl.glPopMatrix();
+        if (light1 == true){
+            gl.glEnable(GL_LIGHT1);
+        }
+        else{
+            gl.glDisable(GL_LIGHT1);
+        }
         
-        gl.glPushMatrix();
-            gl.glTranslatef(positionLight1[0], positionLight1[1], positionLight1[2]);    
-            gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 1);
-            glut.glutSolidSphere(0.2, 10, 10);
-        gl.glPopMatrix();
+        // LIGHTS SOURCES
+        /*gl.glPushMatrix();
+        gl.glTranslatef(positionLight1[0], positionLight1[1], positionLight1[2]);
+        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
+        glut.glutSolidSphere(3, 10, 10);
+        gl.glPopMatrix();*/
 
         //FLOOR
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.25f, 0.25f, 0.25f}, 0);
@@ -260,7 +264,11 @@ public class Scene implements GLEventListener {
         gl.glTranslatef(40f, 71f, -10);
         drawObj(gl, model1);                    //lamp
         
-        
+        gl.glPushMatrix();
+        gl.glTranslatef(0f, 20f, 0);
+        gl.glLightfv(GL_LIGHT1, GL_POSITION, positionLight1, 0);
+        glut.glutSolidSphere(3, 10, 10);
+        gl.glPopMatrix();
         
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.00f, 0.30f, 0.30f}, 0);
@@ -598,15 +606,16 @@ public class Scene implements GLEventListener {
         ly--;
         y--;
     }
-
-    void goRight() {
-        x -= lz * fraction;
-        z -= lz * fraction;
+    
+    void turnOffLight1(){
+        if (light1 == true){
+            light1 = false;
+        }
+        else{
+            light1 = true;
+        }
     }
 
-    void goLeft() {
-        x += lx * fraction;
-        z += ly * fraction;
-    }
+
 
 }
