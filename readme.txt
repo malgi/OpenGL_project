@@ -14,7 +14,7 @@ scene:
 	10 textured objects
 
 LIGHT0
-	main lighting - directional light without source
+	main lighting - directional light (the source is the sun which is not usual to see while common moving trough the scene, but it really is up there - you can see if you will scrolling up long enough)
 	turning off with the 'G' key
 
 LIGHT1

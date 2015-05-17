@@ -440,6 +440,8 @@ public class Scene implements GLEventListener {
         glut.glutSolidSphere(2, 10, 10);
         gl.glPopMatrix();
 
+        
+        // managing of a color of party hard light
         if (time % 100 == 0) {
             savedTime = time;
         }
@@ -496,7 +498,28 @@ public class Scene implements GLEventListener {
         if (light2) {
             time++;
         }
+        
+        gl.glPushMatrix();
+        gl.glTranslatef(5f, 1000f, 5);           //light0 - the sun
 
+        if (light0) {
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{1f, 0.8f, 0.4f}, 0);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{1f, 0.8f, 0.5f}, 0);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
+            gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{1f, 1f, 1f}, 0);
+        } else {
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, new float[]{0.2f, 0.2f, 0.2f}, 0);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, new float[]{0.2f, 0.2f, 0.2f}, 0);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, new float[]{1f, 1f, 1f}, 0);
+            gl.glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128f);
+            gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{0f, 0f, 0f}, 0);
+        }
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, new float[]{0f, 0f, 0f}, 0);
+
+        glut.glutSolidSphere(5, 20, 20);
+        gl.glPopMatrix();
+        
     }
 
     @Override
