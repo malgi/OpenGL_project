@@ -91,6 +91,9 @@ public class MainWindow extends javax.swing.JFrame {
             case KeyEvent.VK_J:
                 scene.turnOffLight2();
                 break;
+            case KeyEvent.VK_G:
+                scene.turnOffLight0();
+                break;
 
         }
     }//GEN-LAST:event_formKeyPressed
